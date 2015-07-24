@@ -1,13 +1,21 @@
 from __future__ import absolute_import
-from flask_restful import Resource, current_app
+from flask_restful import Resource, current_app, fields, marshal_with
 from . import rest_api
 import requests
 
 NOVA_PORT = ":8774/v2"
 AUTH_PORT = ":5000/v2.0"
 
+NOVA_FIELDS = {
+    "servers": fields.List(fields.Nested({
+            "id": fields.String(attribute="id"),
+            "name": fields.String(attribute="name")
+        }))
+}
+
 
 class NovaResources(Resource):
+    @marshal_with(NOVA_FIELDS)
     def get(self):
         payload = {
             "auth": {
