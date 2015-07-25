@@ -7,3 +7,4 @@ api = Blueprint('api', __name__, url_prefix='/api')
 rest_api = Api(api)
 
 from . import  nova
+from . import contrail
