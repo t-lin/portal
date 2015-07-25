@@ -22,4 +22,34 @@ class ServiceResources(Resource):
 
         return vnc_lib.service_instances_list()['service-instances']
 
-rest_api.add_resource(ServiceResources, '/contrail/services')
+
+class VNetResources(Resource):
+    @marshal_with(VNC_SERVICE_FIELDS)
+    def get(self):
+        OS_USERNAME = current_app.config["OS_USERNAME"]
+        OS_PASSWORD = current_app.config["OS_PASSWORD"]
+        # OS_TENANT_NAME = current_app.config["OS_TENANT_NAME"]
+        OS_SERVER = current_app.config["OS_SERVER"]
+        vnc_lib = vnc_api.VncApi(username=OS_USERNAME,
+                                 password=OS_PASSWORD,
+                                 api_server_host=OS_SERVER)
+
+        return vnc_lib.virtual_networks_list()['virtual-networks']
+
+
+class PolicyResources(Resource):
+    @marshal_with(VNC_SERVICE_FIELDS)
+    def get(self):
+        OS_USERNAME = current_app.config["OS_USERNAME"]
+        OS_PASSWORD = current_app.config["OS_PASSWORD"]
+        # OS_TENANT_NAME = current_app.config["OS_TENANT_NAME"]
+        OS_SERVER = current_app.config["OS_SERVER"]
+        vnc_lib = vnc_api.VncApi(username=OS_USERNAME,
+                                 password=OS_PASSWORD,
+                                 api_server_host=OS_SERVER)
+
+        return vnc_lib.network_policys_list()['network-policys']
+
+rest_api.add_resource(ServiceResources, '/contrail/service')
+rest_api.add_resource(VNetResources, '/contrail/vnet')
+rest_api.add_resource(PolicyResources, '/contrail/policy')
