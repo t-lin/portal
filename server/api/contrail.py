@@ -50,6 +50,6 @@ class PolicyResources(Resource):
 
         return vnc_lib.network_policys_list()['network-policys']
 
-rest_api.add_resource(ServiceResources, '/contrail/service')
-rest_api.add_resource(VNetResources, '/contrail/vnet')
-rest_api.add_resource(PolicyResources, '/contrail/policy')
+rest_api.add_resource(ServiceResources, '/contrail/services')
+rest_api.add_resource(VNetResources, '/contrail/vnets')
+rest_api.add_resource(PolicyResources, '/contrail/policies')

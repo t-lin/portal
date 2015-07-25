@@ -22,4 +22,4 @@ class NovaResources(Resource):
                              auth_url=AUTH_URL)
         return nova.servers.list()
 
-rest_api.add_resource(NovaResources, '/nova')
+rest_api.add_resource(NovaResources, '/nova/servers')
