@@ -8,6 +8,8 @@ from .config import DefaultConfig
 from .api import api
 from .extensions import db
 from flask.ext.cors import CORS
+from vnc_api import vnc_api
+from novaclient import client
 
 
 # For import *
@@ -54,6 +56,20 @@ def configure_extensions(app):
     # flask-sqlalchemy
     db.init_app(app)
     CORS(app)
+    OS_USERNAME = app.config["OS_USERNAME"]
+    OS_PASSWORD = app.config["OS_PASSWORD"]
+    OS_TENANT_NAME = app.config["OS_TENANT_NAME"]
+    OS_SERVER = app.config["OS_SERVER"]
+    AUTH_URL = app.config["OS_AUTH_URL"]
+    app.nova = client.Client(2, OS_USERNAME,
+                             OS_PASSWORD,
+                             OS_TENANT_NAME,
+                             auth_url=AUTH_URL)
+
+    app.vnc_lib = vnc_api.VncApi(username=OS_USERNAME,
+                                 password=OS_PASSWORD,
+                                 tenant_name=OS_TENANT_NAME,
+                                 api_server_host=OS_SERVER)
 
 
 def configure_blueprints(app, blueprints):
