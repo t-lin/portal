@@ -7,6 +7,7 @@ from flask import Flask, render_template
 from .config import DefaultConfig
 from .api import api
 from .extensions import db
+from flask.ext.cors import CORS
 
 
 # For import *
@@ -52,6 +53,7 @@ def configure_app(app, config=None):
 def configure_extensions(app):
     # flask-sqlalchemy
     db.init_app(app)
+    CORS(app)
 
 
 def configure_blueprints(app, blueprints):
