@@ -1,12 +1,12 @@
 angular.module "throwdown"
-  .controller "MainController", ($timeout, webDevTec, toastr) ->
+  .controller "MainController", ($timeout, api, toastr) ->
     vm = this
     activate = ->
-      getWebDevTec()
       $timeout (->
         vm.classAnimation = 'rubberBand'
         return
       ), 4000
+      getServices()
       return
 
     showToastr = ->
@@ -14,14 +14,13 @@ angular.module "throwdown"
       vm.classAnimation = ''
       return
 
-    getWebDevTec = ->
-      vm.awesomeThings = webDevTec.getTec()
-      angular.forEach vm.awesomeThings, (awesomeThing) ->
-        awesomeThing.rank = Math.random()
-        return
-      return
+    getServices = ->
+      api.getServices().then (data) ->
+        console.log data
+        vm.services = data
 
-    vm.awesomeThings = []
+    vm.services = []
+
     vm.classAnimation = ''
     vm.creationDate = 1437624261595
     vm.showToastr = showToastr
