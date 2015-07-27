@@ -6,7 +6,6 @@ angular.module "throwdown"
         vm.classAnimation = 'rubberBand'
         return
       ), 4000
-      getServices()
       return
 
     showToastr = ->
@@ -14,15 +13,17 @@ angular.module "throwdown"
       vm.classAnimation = ''
       return
 
-    getServices = ->
+    getData = ->
       api.getServices().then (data) ->
-        console.log data
         vm.services = data
+      api.getVNets().then (data) ->
+        vm.vnets = data
 
     vm.services = []
-
+    vm.vnets = []
     vm.classAnimation = ''
     vm.creationDate = 1437624261595
     vm.showToastr = showToastr
     activate()
+    getData()
     return

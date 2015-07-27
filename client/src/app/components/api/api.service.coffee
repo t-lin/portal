@@ -10,4 +10,10 @@ angular.module "throwdown"
         (response) -> response.data
         (response) -> []
       )
+    @getVNets = ->
+      return $http.get(endpointList 'vnets')
+      .then(
+        (response) -> response.data
+        (response) -> []
+      )
     return

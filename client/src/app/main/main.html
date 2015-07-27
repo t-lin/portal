@@ -1,14 +1,14 @@
 <div class="container">
 
   <div>
-    <acme-navbar creationDate="main.creationDate" />
+    <!-- <acme-navbar creationDate="main.creationDate" /> -->
   </div>
 
-  <div class="jumbotron text-center">
+  <div id="title" class="jumbotron text-center">
     <h1>TORRO Presents</h1>
-    <img src="assets/images/yeoman.png" alt="I'm Yeoman"><br>
     <p>
-      With ♥ thanks to the contributions of<acme-malarkey extra-values="['Ali', 'Thomas', 'Roujia']" />
+      <img src="assets/images/torro.png" alt="We are TORRO"><br>
+      With ♥ thanks to the contributions of<acme-malarkey />
     </p>
   </div>
 
@@ -21,7 +21,7 @@
       </div>
     </div>
   </div>
-
+  <hr>
   <div class="row">
     <div class="col-sm-6 col-md-4" ng-repeat="service in main.services">
       <div class="thumbnail">
