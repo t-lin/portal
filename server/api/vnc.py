@@ -18,6 +18,14 @@ VNC_VNET_INSTANCE_FIELDS = {
     "name": fields.String,
 }
 
+VNC_SERVICE_VMS = {
+    "id": fields.String(attribute="uuid"),
+}
+
+VNC_VNET_VMS = {
+    "id": fields.String,
+}
+
 
 def filter_tenant(list, tenant):
     return [item for item in list
@@ -39,12 +47,14 @@ class VNC(Resource):
 
     def get_vnet_vms(self, vnetid):
         vnet = self.get_vnet(vnetid)
+        vms = []
         try:
-            vms = vnet['UveVirtualNetworkAgent']['virtualmachine_list']
+            vm_list = vnet['UveVirtualNetworkAgent']['virtualmachine_list']
+            vms = [dict([("id", vm)]) for vm in vm_list]
             return vms
-        except:
-            pass
-        return []
+        except Exception, e:
+            print e
+        return vms
 
     def get_vm(self, id):
         url = current_app.config["ANALYTICS_URL"] + "/virtual-machine/" + id\
@@ -86,7 +96,7 @@ class VNetInstance(VNC):
 
 
 class VNetVMList(VNC):
-    # @marshal_with(VNC_LIST_FIELDS)
+    @marshal_with(VNC_VNET_VMS)
     def get(self, vnetid):
         return self.get_vnet_vms(vnetid)
 
@@ -110,7 +120,7 @@ class ServiceInstance(VNC):
 
 
 class ServiceInstanceVMList(VNC):
-    # @marshal_with(VNC_VNET_INSTANCE_FIELDS)
+    @marshal_with(VNC_SERVICE_VMS)
     def get(self, serviceid):
         return self.get_service_vms(serviceid)
 
