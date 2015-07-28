@@ -26,6 +26,11 @@ VNC_VNET_VMS = {
     "id": fields.String,
 }
 
+VNC_POLICY_FIELDS = {
+    "id": fields.String(attribute="uuid"),
+    "fq_name": fields.String
+}
+
 
 def filter_tenant(list, tenant):
     return [item for item in list
@@ -138,18 +143,24 @@ class VMInstance(VNC):
 
 
 class PolicyResources(Resource):
-    # @marshal_with(VNC_LIST_FIELDS)
+    # @marshal_with(VNC_POLICY_FIELDS)
+    def getPolicy(self, id):
+        return requests.get(
+            'http://'+current_app.config['OS_SERVER']+':8082/network-policy/'+id).json()
+
     def get(self):
         policies = current_app.vnc_lib.network_policys_list()
-        return filter_tenant(policies['network-policys'],
-                             current_app.config["OS_TENANT_NAME"])
+        res_pol = []
+        for p in policies['network-policys']:
+            if p['fq_name'][1] == current_app.config["OS_TENANT_NAME"]:
+                res_pol.append(self.getPolicy(p['uuid']))
+        return res_pol
 
 
 rest_api.add_resource(VNetList, '/vnets')
 rest_api.add_resource(VNetInstance, '/vnets/<string:id>')
 rest_api.add_resource(VNetVMList, '/vnets/<string:vnetid>/vms')
 rest_api.add_resource(VNetVMInstance, '/vnets/<string:vnetid>/vms/<string:id>')
-rest_api.add_resource(PolicyResources, '/contrail/policies')
 rest_api.add_resource(ServiceList, '/services')
 rest_api.add_resource(ServiceInstance, '/services/<string:id>')
 rest_api.add_resource(ServiceInstanceVMList,
@@ -157,3 +168,5 @@ rest_api.add_resource(ServiceInstanceVMList,
 rest_api.add_resource(ServiceInstanceVM,
                       '/services/<string:serviceid>/vms/<string:id>')
 rest_api.add_resource(VMInstance, '/vms/<string:id>')
+
+rest_api.add_resource(PolicyResources, '/policies')
