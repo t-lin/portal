@@ -24,7 +24,7 @@ angular.module "throwdown"
         for dir in ['src_addresses', 'dst_addresses']
           vnet =  vm.policy['network_policy_entries']['policy_rule'][0][dir][0]
           getVNet(vnet.virtual_network).then do (dir=dir, id=vnet.virtual_network) ->
-           (data) ->
+            (data) ->
               data.id = id
               vm.vnets[dir] = data
               return
