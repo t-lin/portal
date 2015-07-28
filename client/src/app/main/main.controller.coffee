@@ -1,7 +1,7 @@
 angular.module "throwdown"
-  .controller "MainController", ($interval, $http) ->
+  .controller "MainController", ($interval, $http, $location) ->
     vm = this
-    baseUrl = 'http://localhost:4040/api'
+    baseUrl = 'http://' + $location.host() + ':4040/api'
     endpointList = (endpoint) -> "#{baseUrl}/#{endpoint}"
     endpointId = (endpoint, id) -> "#{baseUrl}/#{endpoint}/#{id}"
     endpointIdVMs = (endpoint, id) -> "#{baseUrl}/#{endpoint}/#{id}/vms"
