@@ -23,13 +23,18 @@ angular.module "throwdown"
         vm.policy = data[0]['network-policy']
         for dir in ['src_addresses', 'dst_addresses']
           vnet =  vm.policy['network_policy_entries']['policy_rule'][0][dir][0]
+          console.log vnet
           getVNet(vnet.virtual_network).then do (dir=dir, id=vnet.virtual_network) ->
             (data) ->
               data.id = id
               vm.vnets[dir] = data
+              console.log id, dir, data
               return
-      getServices().then (data) ->
-        vm.services = data
+        service = vm.policy['network_policy_entries']['policy_rule'][0]['action_list']['apply_service'][0]
+        console.log  service
+        getServices(service).then (data) ->
+          vm.service = data
+          console.log data
         return
       return
 
@@ -39,8 +44,8 @@ angular.module "throwdown"
         (response) -> response.data
         (response) -> []
       )
-    getServices = ->
-      return $http.get(endpointList 'services')
+    getServices = (id) ->
+      return $http.get(endpointId('services', id))
       .then(
         (response) -> response.data
         (response) -> []
@@ -52,8 +57,8 @@ angular.module "throwdown"
         (response) -> []
       )
 
-    vm.service = {}
-    vm.policy = {}
+    vm.service = ""
+    vm.policy = ""
     vm.vnets = {}
     vm.classAnimation = ''
     vm.creationDate = 1437624261595
