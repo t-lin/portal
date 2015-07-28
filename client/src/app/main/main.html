@@ -14,6 +14,7 @@
       <div class="thumbnail" ng-repeat="iface in main.vnets['src_addresses']['UveVirtualNetworkAgent']['interface_list']">
         <div class="caption">
           <p> {{iface}} </p>
+          <p> {{main.ifaces[iface]['UveVMInterfaceAgent']['if_stats'] | json}}
         </div>
       </div>
     </div>
@@ -48,6 +49,7 @@
       <div class="thumbnail" ng-repeat="iface in main.vnets['dst_addresses']['UveVirtualNetworkAgent']['interface_list']">
         <div class="caption">
           <p> {{iface}} </p>
+          <p> {{main.ifaces[iface]['UveVMInterfaceAgent']['if_stats'] | json}}
         </div>
       </div>
     </div>

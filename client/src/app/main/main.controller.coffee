@@ -28,6 +28,14 @@ angular.module "throwdown"
             (data) ->
               data.id = id
               vm.vnets[dir] = data
+              ifaces = data['UveVirtualNetworkAgent']['interface_list']
+              ifaces.map (iface) ->
+                getIface(iface).then do (iface) ->
+                  (data) ->
+                    data.id = iface
+                    vm.ifaces[iface] = data
+                    return
+                return
               return
         service = vm.policy['network_policy_entries']['policy_rule'][0]['action_list']['apply_service'][0]
         getServices(service).then (data) ->
@@ -54,6 +62,13 @@ angular.module "throwdown"
         (response) -> []
       )
 
+    getIface = (id) ->
+      return $http.get(endpointId('ifaces', id))
+      .then(
+        (response) -> response.data
+        (response) -> []
+      )
+
     @scaleUpService = (uuid) ->
       $http.post(scaleEndpoint(uuid,1))
       console.log 'up'
@@ -66,6 +81,7 @@ angular.module "throwdown"
     vm.service = ""
     vm.policy = ""
     vm.vnets = {}
+    vm.ifaces = {}
     vm.classAnimation = ''
     vm.creationDate = 1437624261595
     vm.showToastr = showToastr
