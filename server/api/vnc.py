@@ -266,6 +266,20 @@ class CreateService(VNC):
 
         return "Deployed service and created alarms"
 
+class DeleteService(VNC):
+    def get(self, serviceid):
+        return self.delete(serviceid)
+
+    def delete(self, serviceid):
+        from subprocess import Popen, PIPE, STDOUT
+        cmdLine = "./scripts/delete_firewall.sh " + serviceid
+        p = Popen(cmdLine, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+        out, err = p.communicate()
+        print out
+        print err
+
+        return "Deleted service %s" % serviceid
+
 class ServiceInstanceVMListUUID(VNC):
     # Specify service using UUID rather than FQ name
     # Returns space-separated list of VM UUIDs
@@ -364,11 +378,13 @@ rest_api.add_resource(ServiceInstanceVM,
 rest_api.add_resource(VMInstance, '/vms/<string:id>')
 rest_api.add_resource(VIFaceStats, '/ifaces/<string:id>')
 rest_api.add_resource(PolicyResources, '/policies')
-rest_api.add_resource(ScaleService, 
+rest_api.add_resource(ScaleService,
     '/scaleservice/<string:serviceid>/<string:scalenum>') # UUID for serviceid
-rest_api.add_resource(CreateService, 
+rest_api.add_resource(CreateService,
     '/createservice/<string:service_name>') #service_name currently a placeholder
-rest_api.add_resource(ServiceInstanceVMListUUID, 
+rest_api.add_resource(DeleteService,
+    '/deleteservice/<string:serviceid>') # UUID for serviceid
+rest_api.add_resource(ServiceInstanceVMListUUID,
     '/services/<string:serviceid>/vm_list') # UUID for serviceid
 rest_api.add_resource(ChainService,                          # UUID for serviceid 
     '/services/<string:serviceid>/policy/<string:policyid>') # policyid currently a placeholder
