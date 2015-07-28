@@ -77,6 +77,9 @@ class VNC(Resource):
         url = current_app.config["ANALYTICS_URL"] + "/service-instance/" + id\
             + "?flat"
         service = requests.get(url).json()
+        contrail_service = current_app.vnc_lib.service_instance_read(
+            fq_name_str=id)
+        service['uuid'] = contrail_service.uuid
         return service
 
     def get_services_details(self, tenant_id):

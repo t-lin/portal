@@ -27,13 +27,13 @@
           {{ main.service['UveSvcInstanceConfig']['st_name'] }}
           <div class="input-group text-center">
             <span class="input-group-btn">
-                <button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus">
+                <button type="button" class="btn btn-default btn-number" data-type="minus" ng-click="main.scaleDownService(main.service.uuid)">
                     <span class="glyphicon glyphicon-minus"></span>
                 </button>
             </span>
             <h3> Instances: {{main.service['UveSvcInstanceConfig']['vm_list'].length}} </h3>
             <span class="input-group-btn">
-                <button type="button" class="btn btn-default btn-number" data-type="plus">
+                <button type="button" class="btn btn-default btn-number" data-type="plus" ng-click="main.scaleUpService(main.service.uuid)">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </span>
