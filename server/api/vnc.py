@@ -199,6 +199,16 @@ class ScaleService(VNC):
                     retMsg = "Contrail server error:\n%s" % ret.text
                 else:
                     retMsg = "Scaled service %s to %s instances" % (serviceid, int(num_instances) + scalenum)
+
+                    if scalenum > 0:
+                        # Create alarms for the instances of the stack
+                        from subprocess import Popen, PIPE, STDOUT
+                        cmdLine = "bash -c 'sleep 15; ./scripts/create_scaling_alarms.sh " + serviceid + "&'"
+                        p = Popen(cmdLine, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+                        out, err = p.communicate()
+                        print out
+                        print err
+
             else:
                 retMsg = "Error: Cannot scale number of instances to zero or less"
 
@@ -215,10 +225,35 @@ class CreateService(VNC):
         return out[index+9:].rstrip('\n')
 
     def post(self, service_name):
-        # Currently don't have different services, just call firewall
-        pass
+        import time
 
-        return self.in_net_firewall()
+        # Currently don't have different services, just call firewall
+        service_uuid = self.in_net_firewall()
+        print service_uuid
+        time.sleep(3) # Give instances chance to boot up
+
+        # Create alarms for the instances of the stack
+        from subprocess import Popen, PIPE, STDOUT
+        cmdLine = "./scripts/create_scaling_alarms.sh " + service_uuid
+        p = Popen(cmdLine, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+        out, err = p.communicate()
+        print out
+        print err
+
+        return "Deployed service and created alarms"
+
+class ServiceInstanceVMListUUID(VNC):
+    # Specify service using UUID rather than FQ name
+    # Returns space-separated list of VM UUIDs
+    def get(self, serviceid):
+        out = self.get_service_details(serviceid)
+
+        vmList = ""
+        for vm in out["service-instance"]["virtual_machine_back_refs"]:
+            vmList += vm["to"][0] + " "
+
+        return vmList.rstrip() # Get rid of last space
+
 
 #class tlintest(VNC):
 #    def get(self):
@@ -244,7 +279,8 @@ rest_api.add_resource(ServiceInstanceVM,
                       '/services/<string:serviceid>/vms/<string:id>')
 rest_api.add_resource(VMInstance, '/vms/<string:id>')
 rest_api.add_resource(PolicyResources, '/policies')
-rest_api.add_resource(ScaleService, '/scaleservice/<string:serviceid>/<string:scalenum>')
+rest_api.add_resource(ScaleService, '/scaleservice/<string:serviceid>/<string:scalenum>') # UUID for serviceid
 rest_api.add_resource(CreateService, '/createservice/<string:service_name>')
+rest_api.add_resource(ServiceInstanceVMListUUID, '/services/<string:serviceid>/vm_list') # UUID for serviceid
 #rest_api.add_resource(tlintest, '/tlintest')
 
