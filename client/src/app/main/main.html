@@ -20,10 +20,23 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-12">
+      <h3>{{ main.policy.name }}</h3>
       <div class="thumbnail">
         <div class="caption">
-          <h3>{{ main.policy.name }}</h3>
+          {{ main.service['UveSvcInstanceConfig']['st_name'] }}
+          <div class="input-group text-center">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default btn-number" data-type="minus" ng-click="main.scaleDownService(main.service.uuid)">
+                    <span class="glyphicon glyphicon-minus"></span>
+                </button>
+            </span>
+            <h3> Instances: {{main.service['UveSvcInstanceConfig']['vm_list'].length}} </h3>
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default btn-number" data-type="plus" ng-click="main.scaleUpService(main.service.uuid)">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+            </span>
         </div>
       </div>
     </div>

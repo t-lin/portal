@@ -55,7 +55,8 @@ def configure_app(app, config=None):
 def configure_extensions(app):
     # flask-sqlalchemy
     db.init_app(app)
-    CORS(app)
+    CORS(app, resources=r'/api/*',
+         allow_headers='Content-Type')
     OS_USERNAME = app.config["OS_USERNAME"]
     OS_PASSWORD = app.config["OS_PASSWORD"]
     OS_TENANT_NAME = app.config["OS_TENANT_NAME"]

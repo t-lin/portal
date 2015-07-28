@@ -1,13 +1,14 @@
 angular.module "throwdown"
-  .controller "MainController", ($timeout, $http) ->
+  .controller "MainController", ($interval, $http, $location) ->
     vm = this
-    baseUrl = 'http://localhost:4040/api'
+    baseUrl = 'http://' + $location.host() + ':4040/api'
     endpointList = (endpoint) -> "#{baseUrl}/#{endpoint}"
     endpointId = (endpoint, id) -> "#{baseUrl}/#{endpoint}/#{id}"
     endpointIdVMs = (endpoint, id) -> "#{baseUrl}/#{endpoint}/#{id}/vms"
+    scaleEndpoint = (id, num) -> "#{baseUrl}/scaleservice/#{id}/#{num}"
     activate = ->
-      $timeout (->
-        vm.classAnimation = 'rubberBand'
+      $interval (->
+        getData()
         return
       ), 4000
       getData()
@@ -28,8 +29,9 @@ angular.module "throwdown"
               data.id = id
               vm.vnets[dir] = data
               return
-      getServices().then (data) ->
-        vm.services = data
+        service = vm.policy['network_policy_entries']['policy_rule'][0]['action_list']['apply_service'][0]
+        getServices(service).then (data) ->
+          vm.service = data
         return
       return
 
@@ -39,8 +41,8 @@ angular.module "throwdown"
         (response) -> response.data
         (response) -> []
       )
-    getServices = ->
-      return $http.get(endpointList 'services')
+    getServices = (id) ->
+      return $http.get(endpointId('services', id))
       .then(
         (response) -> response.data
         (response) -> []
@@ -52,8 +54,17 @@ angular.module "throwdown"
         (response) -> []
       )
 
-    vm.service = {}
-    vm.policy = {}
+    @scaleUpService = (uuid) ->
+      $http.post(scaleEndpoint(uuid,1))
+      console.log 'up'
+      return
+    @scaleDownService = (uuid) ->
+      $http.post(scaleEndpoint(uuid,-1))
+      console.log 'down'
+      return
+
+    vm.service = ""
+    vm.policy = ""
     vm.vnets = {}
     vm.classAnimation = ''
     vm.creationDate = 1437624261595
