@@ -9,11 +9,11 @@
   </div>
 
   <div class="row">
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-12">
       <h3>{{ main.vnets['src_addresses'].id }}</h3>
-      <div class="thumbnail" ng-repeat="iface in main.vnets['src_addresses']['UveVirtualNetworkAgent']['interface_list']">
+      <div class="thumbnail col-sm-4" ng-repeat="iface in main.vnets['src_addresses']['UveVirtualNetworkAgent']['interface_list']">
         <div class="caption">
-          <p> {{iface}} </p>
+          <p class="lead"> {{iface}} </p>
           <p> {{main.ifaces[iface]['UveVMInterfaceAgent']['if_stats'] | json}}
         </div>
       </div>
@@ -44,11 +44,11 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-12">
       <h3>{{ main.vnets['dst_addresses'].id }}</h3>
-      <div class="thumbnail" ng-repeat="iface in main.vnets['dst_addresses']['UveVirtualNetworkAgent']['interface_list']">
+      <div class="thumbnail col-sm-4" ng-repeat="iface in main.vnets['dst_addresses']['UveVirtualNetworkAgent']['interface_list']">
         <div class="caption">
-          <p> {{iface}} </p>
+          <p class="lead"> {{iface}} </p>
           <p> {{main.ifaces[iface]['UveVMInterfaceAgent']['if_stats'] | json}}
         </div>
       </div>
