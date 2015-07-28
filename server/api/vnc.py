@@ -110,6 +110,17 @@ class VNC(Resource):
             pass
         return []
 
+    def get_policy_details(self, id):
+        url = current_app.config["CONTRAIL_URL"] + "/network-policy/" + id
+        policy = requests.get(url).json()
+        return policy
+
+    def update_policy_details(self, id, jsonbody):
+        url = current_app.config["CONTRAIL_URL"] + "/network-policy/" + id
+        headers = {"Content-Type": "application/json"}
+        results = requests.put(url, headers=headers, data=json.dumps(jsonbody))
+        return results
+
 
 class VNetList(VNC):
     @marshal_with(VNC_LIST_FIELDS)
@@ -267,6 +278,66 @@ class ServiceInstanceVMListUUID(VNC):
 
         return vmList.rstrip() # Get rid of last space
 
+class ChainService(VNC):
+    def post(self, serviceid, policyid):
+        return self.put(serviceid, policyid)
+
+    def put(self, serviceid, policyid):
+        retMsg = None
+
+        # Get the service's FQ name, needed for insertion into policy
+        details = self.get_service_details(serviceid)
+        fq_name = ":".join(i for i in details["service-instance"]["fq_name"])
+
+        # Currently default policyid to uoftorro policy
+        policyid = "86e13322-7e79-40c4-9e38-83a100e7f12d" # tmp
+
+        policy = self.get_policy_details(policyid)
+        # Currently assume only single rule, hence get first element of list
+        pol_rule = policy["network-policy"]["network_policy_entries"]["policy_rule"][0]
+        service_list = pol_rule["action_list"]["apply_service"]
+        if not service_list:
+            service_list = [ fq_name ]
+        else:
+            service_list.append(fq_name)
+
+        policy["network-policy"]["network_policy_entries"]["policy_rule"][0]["action_list"]["apply_service"] = service_list
+
+        ret = self.update_policy_details(policyid, policy)
+        if ret.status_code != 200:
+            retMsg = "Contrail server error:\n%s" % ret.text
+        else:
+            retMsg = "Added service %s (%s) into policy %s" % (serviceid, fq_name, policyid)
+
+        return retMsg
+
+    def delete(self, serviceid, policyid):
+        retMsg = None
+
+        # Get the service's FQ name, needed for insertion into policy
+        details = self.get_service_details(serviceid)
+        fq_name = ":".join(i for i in details["service-instance"]["fq_name"])
+
+        # Currently default policyid to uoftorro policy
+        policyid = "86e13322-7e79-40c4-9e38-83a100e7f12d" # tmp
+
+        policy = self.get_policy_details(policyid)
+        # Currently assume only single rule, hence get first element of list
+        pol_rule = policy["network-policy"]["network_policy_entries"]["policy_rule"][0]
+        service_list = pol_rule["action_list"]["apply_service"]
+
+        if fq_name in service_list:
+            service_list.remove(fq_name)
+
+        policy["network-policy"]["network_policy_entries"]["policy_rule"][0]["action_list"]["apply_service"] = service_list
+
+        ret = self.update_policy_details(policyid, policy)
+        if ret.status_code != 200:
+            retMsg = "Contrail server error:\n%s" % ret.text
+        else:
+            retMsg = "Removed service %s (%s) into policy %s" % (serviceid, fq_name, policyid)
+
+        return retMsg
 
 #class tlintest(VNC):
 #    def get(self):
@@ -293,8 +364,13 @@ rest_api.add_resource(ServiceInstanceVM,
 rest_api.add_resource(VMInstance, '/vms/<string:id>')
 rest_api.add_resource(VIFaceStats, '/ifaces/<string:id>')
 rest_api.add_resource(PolicyResources, '/policies')
-rest_api.add_resource(ScaleService, '/scaleservice/<string:serviceid>/<string:scalenum>') # UUID for serviceid
-rest_api.add_resource(CreateService, '/createservice/<string:service_name>')
-rest_api.add_resource(ServiceInstanceVMListUUID, '/services/<string:serviceid>/vm_list') # UUID for serviceid
+rest_api.add_resource(ScaleService, 
+    '/scaleservice/<string:serviceid>/<string:scalenum>') # UUID for serviceid
+rest_api.add_resource(CreateService, 
+    '/createservice/<string:service_name>') #service_name currently a placeholder
+rest_api.add_resource(ServiceInstanceVMListUUID, 
+    '/services/<string:serviceid>/vm_list') # UUID for serviceid
+rest_api.add_resource(ChainService,                          # UUID for serviceid 
+    '/services/<string:serviceid>/policy/<string:policyid>') # policyid currently a placeholder
 #rest_api.add_resource(tlintest, '/tlintest')
 
