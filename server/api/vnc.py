@@ -192,6 +192,33 @@ class ScaleService(VNC):
 
         return retMsg
 
+class CreateService(VNC):
+    def in_net_firewall(self):
+        from subprocess import Popen, PIPE, STDOUT
+        cmdLine = "./scripts/contrail_innet_firewall.sh"
+        p = Popen(cmdLine, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+        out, err = p.communicate()
+
+        index = out.find("UUID is:")
+        return out[index+9:].rstrip('\n')
+
+    def post(self, service_name):
+        # Currently don't have different services, just call firewall
+        pass
+
+        return self.in_net_firewall()
+
+#class tlintest(VNC):
+#    def get(self):
+#        #return self.get_service_details("632adb54-6742-4a51-8015-4ead8f3933eb")
+#        from subprocess import Popen, PIPE, STDOUT
+#        cmdLine = "./scripts/contrail_innet_firewall.sh"
+#        p = Popen(cmdLine, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+#        out, err = p.communicate()
+#
+#        index = out.find("UUID is:")
+#        return out[index+9:].rstrip('\n')
+#        #return
 
 rest_api.add_resource(VNetList, '/vnets')
 rest_api.add_resource(VNetInstance, '/vnets/<string:id>')
@@ -206,4 +233,6 @@ rest_api.add_resource(ServiceInstanceVM,
                       '/services/<string:serviceid>/vms/<string:id>')
 rest_api.add_resource(VMInstance, '/vms/<string:id>')
 rest_api.add_resource(ScaleService, '/scaleservice/<string:serviceid>/<string:scalenum>')
+rest_api.add_resource(CreateService, '/createservice/<string:service_name>')
+#rest_api.add_resource(tlintest, '/tlintest')
 
