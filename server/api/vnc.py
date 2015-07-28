@@ -190,6 +190,16 @@ class PolicyResources(Resource):
                 res_pol.append(self.getPolicy(p['uuid']))
         return res_pol
 
+
+class VIFaceStats(Resource):
+    # @marshal_with(VNC_VMS_INSTANCE_FIELDS)
+    def get(self, id):
+        url = current_app.config["ANALYTICS_URL"] + \
+            "/virtual-machine-interface/" + id + "?flat"
+        service = requests.get(url).json()
+        return service
+
+
 class ScaleService(VNC):
     def post(self, serviceid, scalenum):
         retMsg = None
@@ -366,6 +376,7 @@ rest_api.add_resource(ServiceInstanceVMList,
 rest_api.add_resource(ServiceInstanceVM,
                       '/services/<string:serviceid>/vms/<string:id>')
 rest_api.add_resource(VMInstance, '/vms/<string:id>')
+rest_api.add_resource(VIFaceStats, '/ifaces/<string:id>')
 rest_api.add_resource(PolicyResources, '/policies')
 rest_api.add_resource(ScaleService,
     '/scaleservice/<string:serviceid>/<string:scalenum>') # UUID for serviceid
