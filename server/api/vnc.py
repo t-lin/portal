@@ -353,17 +353,13 @@ class ChainService(VNC):
 
         return retMsg
 
-#class tlintest(VNC):
-#    def get(self):
-#        #return self.get_service_details("632adb54-6742-4a51-8015-4ead8f3933eb")
-#        from subprocess import Popen, PIPE, STDOUT
-#        cmdLine = "./scripts/contrail_innet_firewall.sh"
-#        p = Popen(cmdLine, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-#        out, err = p.communicate()
-#
-#        index = out.find("UUID is:")
-#        return out[index+9:].rstrip('\n')
-#        #return
+class tlintest(VNC):
+    def get(self):
+        return "You called GET!"
+
+    def put(self):
+        return "You called PUT!"
+
 
 rest_api.add_resource(VNetList, '/vnets')
 rest_api.add_resource(VNetInstance, '/vnets/<string:id>')
@@ -388,5 +384,5 @@ rest_api.add_resource(ServiceInstanceVMListUUID,
     '/services/<string:serviceid>/vm_list') # UUID for serviceid
 rest_api.add_resource(ChainService,                          # UUID for serviceid 
     '/services/<string:serviceid>/policy/<string:policyid>') # policyid currently a placeholder
-#rest_api.add_resource(tlintest, '/tlintest')
+rest_api.add_resource(tlintest, '/tlintestapiurl')
 
