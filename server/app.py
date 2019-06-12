@@ -57,15 +57,15 @@ def configure_extensions(app):
     db.init_app(app)
     CORS(app, resources=r'/api/*',
          allow_headers='Content-Type')
-    OS_USERNAME = app.config["OS_USERNAME"]
-    OS_PASSWORD = app.config["OS_PASSWORD"]
-    OS_TENANT_NAME = app.config["OS_TENANT_NAME"]
+    #OS_USERNAME = app.config["OS_USERNAME"]
+    #OS_PASSWORD = app.config["OS_PASSWORD"]
+    #OS_TENANT_NAME = app.config["OS_TENANT_NAME"]
     #OS_SERVER = app.config["OS_SERVER"]
-    AUTH_URL = app.config["OS_AUTH_URL"]
-    app.nova = client.Client(2, OS_USERNAME,
-                             OS_PASSWORD,
-                             OS_TENANT_NAME,
-                             auth_url=AUTH_URL)
+    #AUTH_URL = app.config["OS_AUTH_URL"]
+    #app.nova = client.Client(2, OS_USERNAME,
+    #                         OS_PASSWORD,
+    #                         OS_TENANT_NAME,
+    #                         auth_url=AUTH_URL)
 
     #app.vnc_lib = vnc_api.VncApi(username=OS_USERNAME,
     #                             password=OS_PASSWORD,
