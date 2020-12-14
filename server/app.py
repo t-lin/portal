@@ -7,9 +7,9 @@ from flask import Flask, render_template
 from .config import DefaultConfig
 from .api import api
 from .extensions import db
-from flask.ext.cors import CORS
+from flask_cors import CORS
 #from vnc_api import vnc_api
-from novaclient import client
+#from novaclient import client
 
 
 # For import *
@@ -33,7 +33,7 @@ def create_app(config=None, app_name=None, blueprints=None):
     configure_app(app, config)
     configure_hook(app)
     configure_blueprints(app, blueprints)
-    configure_extensions(app)
+    #configure_extensions(app)
     # configure_logging(app)
     # configure_template_filters(app)
     # configure_error_handlers(app)
