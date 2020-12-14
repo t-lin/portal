@@ -7,7 +7,7 @@ from flask import Flask, render_template
 from .config import DefaultConfig
 from .api import api
 from .extensions import db
-from flask.ext.cors import CORS
+#from flask_cors import CORS
 #from vnc_api import vnc_api
 from novaclient import client
 
@@ -33,7 +33,7 @@ def create_app(config=None, app_name=None, blueprints=None):
     configure_app(app, config)
     configure_hook(app)
     configure_blueprints(app, blueprints)
-    configure_extensions(app)
+    #configure_extensions(app)
     # configure_logging(app)
     # configure_template_filters(app)
     # configure_error_handlers(app)
@@ -55,17 +55,17 @@ def configure_app(app, config=None):
 def configure_extensions(app):
     # flask-sqlalchemy
     db.init_app(app)
-    CORS(app, resources=r'/api/*',
-         allow_headers='Content-Type')
-    OS_USERNAME = app.config["OS_USERNAME"]
-    OS_PASSWORD = app.config["OS_PASSWORD"]
-    OS_TENANT_NAME = app.config["OS_TENANT_NAME"]
+    #CORS(app, resources=r'/api/*',
+    #     allow_headers='Content-Type')
+    #OS_USERNAME = app.config["OS_USERNAME"]
+    #OS_PASSWORD = app.config["OS_PASSWORD"]
+    #OS_TENANT_NAME = app.config["OS_TENANT_NAME"]
     #OS_SERVER = app.config["OS_SERVER"]
-    AUTH_URL = app.config["OS_AUTH_URL"]
-    app.nova = client.Client(2, OS_USERNAME,
-                             OS_PASSWORD,
-                             OS_TENANT_NAME,
-                             auth_url=AUTH_URL)
+    #AUTH_URL = app.config["OS_AUTH_URL"]
+    #app.nova = client.Client(2, OS_USERNAME,
+    #                         OS_PASSWORD,
+    #                         OS_TENANT_NAME,
+    #                         auth_url=AUTH_URL)
 
     #app.vnc_lib = vnc_api.VncApi(username=OS_USERNAME,
     #                             password=OS_PASSWORD,
